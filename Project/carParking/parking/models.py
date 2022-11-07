@@ -14,7 +14,7 @@ class car(models.Model):
 
 class parkingplaces(models.Model):
     placenumber = models.IntegerField()
-    car_registrynumber =models.ForeignKey(car.registrynumber)
+    car_registrynumber =models.ForeignKey(car, on_delete=models.CASCADE)
     dateofpurchase = models.DateTimeField()
 
 
@@ -24,4 +24,4 @@ class carowner(models.Model):
     lastname = models.CharField(max_length=45)
     email = models.CharField(max_length=45)
     adress = models.CharField(max_length=120)
-    carregistrynumber = models.ForeignKey(car.registrynumber)
+    carregistrynumber = models.ForeignKey(car, on_delete=models.CASCADE)
