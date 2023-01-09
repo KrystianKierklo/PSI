@@ -1,5 +1,6 @@
 from django.contrib import admin
 from.models import Car, Carowner, Parkingplaces
+from rest_framework.pagination import LimitOffsetPagination
 # Register your models here.
 
 # admin.site.register(Car)
@@ -8,7 +9,7 @@ from.models import Car, Carowner, Parkingplaces
 
 @admin.register(Car)
 class CarAdmin(admin.ModelAdmin):
-    pass
+    list_filter = ['productionyear']
 
 @admin.register(Carowner)
 class CarownerAdmin(admin.ModelAdmin):

@@ -3,17 +3,21 @@ from django.urls import path
 from django.urls import include
 from . import views
 from rest_framework import routers
-from .views import CarViewSet, CarownerViewSet, ParkingplacesViewSet
+from .views import *
 
 
 
 router = routers.DefaultRouter()
-router.register(r'car', CarViewSet)
-router.register(r'owner', CarownerViewSet)
-router.register(r'place', ParkingplacesViewSet)
+router.register(r'car', CarList)
+router.register(r'owner', CarownerList)
+router.register(r'place', ParkingplacesList)
 
 
 urlpatterns = [
     path('', views.home, name='home'),
-    path('api/', include(router.urls)),
+    # path('', views.ApiRoot.as_view(), name=views.ApiRoot.name),
+    path('car', views.CarList.as_view(), name=views.CarList.name),
+    path('car/<int:pk>', views.CarDetail.as_view(), name=views.CarDetail.name),
+    path('carowner', views.CarownerList.as_view(), name=views.CarownerList.name),
+    path('parkingplaces', views.ParkingplacesList.as_view(), name=views.ParkingplacesList.name),
 ]
