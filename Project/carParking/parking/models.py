@@ -38,6 +38,7 @@ class Car(models.Model):
     vehicalmodel = models.CharField(max_length=50)
     productionyear = models.IntegerField(validators=[validate_productionyear])
     color = models.CharField(max_length=50)
+    owner = models.ForeignKey('auth.User', related_name='cars', on_delete=models.CASCADE)
 
     def __str__(self):
         return f"{self.vehicalbrand} {self.vehicalmodel} {self.registrynumber}"
