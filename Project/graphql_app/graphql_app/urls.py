@@ -1,4 +1,4 @@
-"""carParking URL Configuration
+"""graphql_app URL Configuration
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/4.1/topics/http/urls/
@@ -14,12 +14,12 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path, include, re_path
+from django.urls import path
+from graphene_django.views import GraphQLView
+from products.schema import schema
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api-auth/', include('rest_framework.urls')),
-    path('', include('parking.urls')),
-    re_path(r'^api-auth/', include('rest_framework.urls')),
-
+    path('graphql', GraphQLView.as_view(graphiql=True, schema=schema))
 ]
