@@ -13,10 +13,10 @@ class CarSerializer(serializers.HyperlinkedModelSerializer):
         fields = ['registrynumber', 'vehicalbrand', 'vehicalmodel', 'productionyear', 'color', 'owner']
 
 class Carownerserializer(serializers.HyperlinkedModelSerializer):
-
+    owner = serializers.ReadOnlyField(source='owner.name')
     class Meta:
         model = Carowner
-        fields = ['phone_number', 'name', 'lastname', 'email', 'adress', 'carregistrynumber']
+        fields = ['phone_number', 'name', 'lastname', 'email', 'adress', 'carregistrynumber', 'owner']
 
     # def validate_name(self, value):
     #     if not value:
@@ -31,11 +31,11 @@ class Parkingplacesserializer(serializers.HyperlinkedModelSerializer):
 class UserCarSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Car
-        fields = ['url', 'caregistrynumber']
+        fields = ['url', 'vehicalbrand', 'vehicalmodel', 'registrynumber']
 
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
     cars = UserCarSerializer(many=True, read_only=True)
     class Meta:
         model = User
-        fields: ['url', 'registrynumber' 'cars']
+        fields = ['url','pk', 'cars']

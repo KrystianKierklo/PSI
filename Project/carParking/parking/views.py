@@ -10,7 +10,7 @@ from .serializers import CarSerializer, Carownerserializer, Parkingplacesseriali
 from django_filters import AllValuesFilter, DateTimeFilter, NumberFilter, FilterSet
 from rest_framework import permissions
 from django.contrib.auth.models import User
-
+from .custompermission import IsCurrentUserOwnerOrReadOnlu
 
 
 def home(request):
@@ -30,16 +30,15 @@ class CarList(generics.ListCreateAPIView):
     name = 'carList'
     search_fields = ['vehicalmodel']
     ordering_fields = ['productionyear']
-    # permission_classes = (permissions.IsAuthenticatedOrReadOnly)
-
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly, IsCurrentUserOwnerOrReadOnlu)
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
 
 class CarDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Car.objects.all()
     serializer_class = CarSerializer
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly, IsCurrentUserOwnerOrReadOnlu)
     name = 'car-detail'
-
 
 
 class CarownerList(generics.ListCreateAPIView):
@@ -49,11 +48,16 @@ class CarownerList(generics.ListCreateAPIView):
     filterset_fields = ['lastname']
     search_fields = ['lastname']
     ordering_fields = ['lastname']
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly, IsCurrentUserOwnerOrReadOnlu)
 
-# class CarownerDetail(generics.ListCreateAPIView):
-#     queryset = Carowner.objects.all()
-#     serializer_class = Carownerserializer
-#     name = 'carowner-detail'
+    def perform_create(self, serializer):
+        serializer.save(owner=self.request.user)
+
+class CarownerDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Carowner.objects.all()
+    serializer_class = Carownerserializer
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly, IsCurrentUserOwnerOrReadOnlu)
+    name = 'carowner-detail'
 
 
 class ParkingplacesList(generics.ListCreateAPIView):
@@ -62,16 +66,17 @@ class ParkingplacesList(generics.ListCreateAPIView):
     name = 'parkingplacesList'
     search_fields = ['placenumber']
     ordering_fields = ['placenumber', 'dateofpurchase']
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
 
 
-class ApiRoot(generics.GenericAPIView):
-    name = 'api-root'
-    def get(self, request, *args, **kwargs):
-        return Response({'car': reverse(CarList.name, request=request),
-                         'carowner': reverse(CarownerList.name, request=request),
-                         'parkingplaces': reverse(ParkingplacesList.name, request=request),
-                         'users': reverse(UserList.name, request=request)
-})
+class ParkingplaceDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Parkingplaces.objects.all()
+    serializer_class = Parkingplacesserializer
+    name = 'parkingplace-detail'
+    permission_classes = (permissions.IsAdminUser,)
+
+
+
 
 
 class UserList(generics.ListAPIView):
@@ -83,3 +88,14 @@ class UserDetail(generics.RetrieveAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
     name = 'user-detail'
+
+
+
+class ApiRoot(generics.GenericAPIView):
+    name = 'api-root'
+    def get(self, request, *args, **kwargs):
+        return Response({'car': reverse(CarList.name, request=request),
+                         'carowner': reverse(CarownerList.name, request=request),
+                         'parkingplaces': reverse(ParkingplacesList.name, request=request),
+                         'users': reverse(UserList.name, request=request)
+})
